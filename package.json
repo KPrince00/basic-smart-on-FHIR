@@ -1,0 +1,20 @@
+{
+  "name": "test-dtr",
+  "version": "1.0.0",
+  "description": "A barebones DTR app for testing Logica launch points.",
+  "scripts": {
+    "serve": "http-server src -p 9090"
+  },
+  "dependencies": {
+    "serve": "^5.2.1"
+  },
+  "devDependencies": {
+    "http-server": "^0.10.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.bcbssc.com/826M/test-dtr.git"
+  },
+  "author": "826m",
+  "license": "ISC"
+}
