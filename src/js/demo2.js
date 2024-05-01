@@ -13,56 +13,56 @@
         function onReady(smart)  {
             console.log("Smart ready!");
             console.log(smart);
-            if (smart.hasOwnProperty('patient')) {
-                console.log("Huhm...");
-                smart.patient.read().then(function(patient) {
-                    console.log("Smart patient fetched...");
-                    var gender = patient.gender;
-
-                    var fname = '';
-                    var lname = '';
-
-                    if (typeof patient.name[0] !== 'undefined') {
-                        fname = patient.name[0].given.join(' ');
-                        lname = patient.name[0].family;
-                    }
-
-                    var p = defaultPatient();
-                    p.birthdate = patient.birthDate;
-                    p.gender = gender;
-                    p.fname = fname;
-                    p.lname = lname;
-                    console.log("Patient fetched and resolved!");
-                    console.log(p);
-                    ret.resolve(p);
-                });
-            } else {
-                console.log("no patient :(");
-                onError();
-            }
+            smart.patient.request('Encounter', {
+                resolveReferences: [ "serviceProvider", "participant.0.individual" ]
+            }).then(function(results) {
+                ret.resolve(results);
+            });
         }
 
         FHIR.oauth2.ready(onReady, onError);
         return ret.promise();
-
     };
 
-    function defaultPatient(){
-        return {
-            fname: {value: ''},
-            lname: {value: ''},
-            gender: {value: ''},
-            birthdate: {value: ''}
-        };
-    }
-
-    window.drawVisualization = function(p) {
+    window.drawVisualization = function(encounters) {
+        console.log(encounters)
         $('#holder').show();
         $('#loading').hide();
-        $('#fname').html(p.fname);
-        $('#lname').html(p.lname);
-        $('#gender').html(p.gender);
-        $('#birthdate').html(p.birthdate);
+        //Turn encounters into a list of elements
+        const mainUL = document.createElement('ol');
+        let encounterList = encounters.entry;
+        for (const encounter of encounterList) {
+            mainUL.appendChild(encounterToLi(encounter.resource))
+        }
+        //Display list
+        $('#maindetails').html(mainUL);
     };
+
+    function encounterToLi(encounter) {
+        const encounterLI = document.createElement('li');
+        encounterLI.innerHTML = encounter.type[0].coding[0].display;
+
+        const detailsUl = document.createElement('ul');
+        //Append details
+        periodLI = document.createElement('li');
+        periodLI.innerHTML = "Date: " + encounter.period.start.substring(0,10);
+        detailsUl.appendChild(periodLI);
+
+        practitionerLI = document.createElement('li');
+        let practitionerName = encounter.participant[0].individual.name[0];
+        practitionerLI.innerHTML = "Practitioner: " + practitionerName.given[0] + " " + practitionerName.family;
+        detailsUl.appendChild(practitionerLI);
+
+        providerLI = document.createElement('li');
+        providerLI.innerHTML = "Provider: " + encounter.serviceProvider.name
+        detailsUl.appendChild(providerLI);
+
+        statusLI = document.createElement('li');
+        statusLI.innerHTML = "Status: " + encounter.status;
+        detailsUl.appendChild(statusLI);
+
+        encounterLI.appendChild(detailsUl);
+        return encounterLI;
+    }
 
 })(window);
