@@ -1,5 +1,5 @@
 FHIR.oauth2.authorize({
-    "client_id": "my_web_app",
-    "scope": "launch patient/Patient.read",
+    "client_id": "test_smart_app",
+    "scope": "launch/patient openid profile patient/Patient.read patient/ExplanationOfBenefit.read",
     "redirect_uri": "demo.html"
 });

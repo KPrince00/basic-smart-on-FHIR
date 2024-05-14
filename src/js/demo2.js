@@ -48,14 +48,18 @@
         periodLI.innerHTML = "Date: " + encounter.period.start.substring(0,10);
         detailsUl.appendChild(periodLI);
 
-        practitionerLI = document.createElement('li');
-        let practitionerName = encounter.participant[0].individual.name[0];
-        practitionerLI.innerHTML = "Practitioner: " + practitionerName.given[0] + " " + practitionerName.family;
-        detailsUl.appendChild(practitionerLI);
+        if(encounter.participant) {
+            practitionerLI = document.createElement('li');
+            let practitionerName = encounter.participant[0].individual.name[0];
+            practitionerLI.innerHTML = "Practitioner: " + practitionerName.given[0] + " " + practitionerName.family;
+            detailsUl.appendChild(practitionerLI);
+        }
 
-        providerLI = document.createElement('li');
-        providerLI.innerHTML = "Provider: " + encounter.serviceProvider.name
-        detailsUl.appendChild(providerLI);
+        if(encounter.serviceProvider) {
+            providerLI = document.createElement('li');
+            providerLI.innerHTML = "Provider: " + encounter.serviceProvider.name
+            detailsUl.appendChild(providerLI);
+        }
 
         statusLI = document.createElement('li');
         statusLI.innerHTML = "Status: " + encounter.status;
