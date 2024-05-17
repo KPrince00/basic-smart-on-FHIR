@@ -17,13 +17,18 @@
                 console.log("Huhm...");
                 smart.patient.read().then(function(patient) {
                     console.log("Smart patient fetched...");
+                    console.log(patient);
                     var gender = patient.gender;
 
                     var fname = '';
                     var lname = '';
 
                     if (typeof patient.name[0] !== 'undefined') {
-                        fname = patient.name[0].given.join(' ');
+                        if(fname = patient.name[0].given.length) {
+                            fname = patient.name[0].given.join(' ');
+                        } else {
+                            fname = patient.name[0].given;
+                        }
                         lname = patient.name[0].family;
                     }
 
